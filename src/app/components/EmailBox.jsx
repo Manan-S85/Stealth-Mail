@@ -28,17 +28,17 @@ export default function EmailBox() {
         setIsActive(true);
       } else {
         console.error('Failed to generate email');
-        // Fallback for demo
+        // Fallback for demo - using actual Mail.tm domain
         const randomId = Math.random().toString(36).substring(2, 15);
-        setEmail(`${randomId}@stealthmail.com`);
+        setEmail(`${randomId}@2200freefonts.com`);
         setTimeLeft(600);
         setIsActive(true);
       }
     } catch (error) {
       console.error('Error generating email:', error);
-      // Fallback for demo
+      // Fallback for demo - using actual Mail.tm domain
       const randomId = Math.random().toString(36).substring(2, 15);
-      setEmail(`${randomId}@stealthmail.com`);
+      setEmail(`${randomId}@2200freefonts.com`);
       setTimeLeft(600);
       setIsActive(true);
     } finally {
