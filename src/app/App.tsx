@@ -24,12 +24,22 @@ const createTempEmail = async () => {
       },
     });
     
-    if (!response.ok) {
-      throw new Error('Failed to create email');
+    const data = await response.json();
+    
+    // Handle both success and fallback responses
+    if (data.success) {
+      return data;
+    } else if (data.fallback) {
+      return {
+        success: true,
+        email: data.fallback.email,
+        id: 'fallback_' + Date.now(),
+        token: null,
+        message: data.fallback.message
+      };
     }
     
-    const data = await response.json();
-    return data;
+    throw new Error('No valid response from API');
   } catch (error) {
     console.error('Error creating email:', error);
     // Fallback to demo data
@@ -39,7 +49,7 @@ const createTempEmail = async () => {
     ).join('');
     return {
       success: true,
-      email: `${randomStr}@tempmail.net`,
+      email: `${randomStr}@2200freefonts.com`,
       id: 'demo_' + Date.now(),
       token: null,
       message: 'Demo email (Mail.tm unavailable)'
@@ -315,7 +325,7 @@ export default function App() {
             <div className="mb-6">
               <div className="text-2xl font-mono font-bold text-gray-900 mb-4">
                 {!isClient ? (
-                  'loading@tempmail.net'
+                  'loading@2200freefonts.com'
                 ) : isCreatingEmail ? (
                   <div className="flex items-center gap-2 text-gray-500">
                     <RefreshCw className="h-5 w-5 animate-spin" />
