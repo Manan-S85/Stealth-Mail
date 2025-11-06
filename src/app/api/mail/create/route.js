@@ -5,31 +5,30 @@ export const revalidate = 0;
 
 export async function POST() {
   try {
-    // Get available domains from Mail.tm
-    const domainsResponse = await fetch('https://api.mail.tm/domains', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'Stealth-Mail/1.0',
-        'Content-Type': 'application/json',
-      },
-      signal: AbortSignal.timeout(10000), // 10 second timeout
-    });
+    let domain = '2200freefonts.com'; // Default known working domain
+    
+    // Try to get available domains from Mail.tm
+    try {
+      const domainsResponse = await fetch('https://api.mail.tm/domains', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'Stealth-Mail/1.0',
+        },
+        signal: AbortSignal.timeout(5000), // 5 second timeout
+      });
 
-    if (!domainsResponse.ok) {
-      const errorText = await domainsResponse.text();
-      console.error('Domains API Error:', domainsResponse.status, errorText);
-      throw new Error('Failed to fetch domains: ' + domainsResponse.status);
+      if (domainsResponse.ok) {
+        const domainsData = await domainsResponse.json();
+        const availableDomains = domainsData['hydra:member'] || [];
+        if (availableDomains.length > 0) {
+          domain = availableDomains[0].domain;
+        }
+      }
+    } catch (domainError) {
+      console.log('Using fallback domain due to:', domainError.message);
+      // Continue with fallback domain
     }
-
-    const domainsData = await domainsResponse.json();
-    const availableDomains = domainsData['hydra:member'] || [];
-
-    if (availableDomains.length === 0) {
-      throw new Error('No available domains from Mail.tm');
-    }
-
-    const domain = availableDomains[0].domain;
     const username = 'user' + Math.floor(Math.random() * 100000);
     const email = username + '@' + domain;
     const password = 'temp' + Math.floor(Math.random() * 10000);

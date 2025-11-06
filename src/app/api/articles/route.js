@@ -22,18 +22,44 @@ export async function GET() {
 
       if (response.ok) {
         const data = await response.json();
-        const notionArticles = data.results.map(page => ({
-          id: page.id,
-          title: page.properties.Title?.title?.[0]?.plain_text || 'Untitled',
-          summary: page.properties.Summary?.rich_text?.[0]?.plain_text || 'No summary available',
-          category: page.properties.Category?.select?.name || 'General',
-          author: page.properties.Author?.rich_text?.[0]?.plain_text || 'Anonymous',
-          publishedAt: page.properties.Published_Date?.date?.start || page.created_time,
-          readTime: page.properties.Read_Time?.number || 5,
-          tags: page.properties.Tags?.multi_select?.map(tag => tag.name) || [],
-          isPublished: page.properties.Published?.checkbox || false,
-          url: `/blog/${page.id}`,
-        }));
+        const notionArticles = data.results.map(page => {
+          const props = page.properties;
+          
+          // Try multiple possible property names for title
+          const title = props.Title?.title?.[0]?.plain_text || 
+                       props.Name?.title?.[0]?.plain_text ||
+                       props.title?.title?.[0]?.plain_text ||
+                       'Welcome to Stealth Mail';
+          
+          // Try multiple possible property names for summary/description
+          const summary = props.Summary?.rich_text?.[0]?.plain_text ||
+                         props.Description?.rich_text?.[0]?.plain_text ||
+                         props.Excerpt?.rich_text?.[0]?.plain_text ||
+                         'Learn about secure temporary email services and privacy protection.';
+          
+          // Try to get category
+          const category = props.Category?.select?.name ||
+                          props.Type?.select?.name ||
+                          'Privacy';
+          
+          // Try to get author
+          const author = props.Author?.rich_text?.[0]?.plain_text ||
+                        props.Created_by?.rich_text?.[0]?.plain_text ||
+                        'Stealth Mail Team';
+          
+          return {
+            id: page.id,
+            title: title,
+            summary: summary,
+            category: category,
+            author: author,
+            publishedAt: props.Published_Date?.date?.start || props.Created?.created_time || page.created_time,
+            readTime: props.Read_Time?.number || props.ReadTime?.number || 5,
+            tags: props.Tags?.multi_select?.map(tag => tag.name) || ['privacy', 'email', 'security'],
+            isPublished: props.Published?.checkbox !== false, // Default to published unless explicitly false
+            url: `/blog/${page.id}`,
+          };
+        });
 
         if (notionArticles.length > 0) {
           return NextResponse.json({
