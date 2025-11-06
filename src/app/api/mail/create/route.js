@@ -10,10 +10,15 @@ export async function POST() {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
+        'User-Agent': 'Stealth-Mail/1.0',
+        'Content-Type': 'application/json',
       },
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     if (!domainsResponse.ok) {
+      const errorText = await domainsResponse.text();
+      console.error('Domains API Error:', domainsResponse.status, errorText);
       throw new Error('Failed to fetch domains: ' + domainsResponse.status);
     }
 
@@ -35,11 +40,13 @@ export async function POST() {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'User-Agent': 'Stealth-Mail/1.0',
       },
       body: JSON.stringify({
         address: email,
         password: password,
       }),
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     if (!createAccountResponse.ok) {
@@ -55,11 +62,13 @@ export async function POST() {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'User-Agent': 'Stealth-Mail/1.0',
       },
       body: JSON.stringify({
         address: email,
         password: password,
       }),
+      signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
     if (!authResponse.ok) {
