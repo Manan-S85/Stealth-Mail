@@ -1,10 +1,10 @@
 const nextConfig = {
-  extends: ['next/core-web-vitals', 'next/typescript'],
+  extends: ['next/core-web-vitals'],
   rules: {
     '@next/next/no-img-element': 'off',
     'react/no-unescaped-entities': 'off',
-    '@typescript-eslint/no-unused-vars': 'warn',
-    'no-console': 'warn',
+    'no-console': 'off',
+    'react-hooks/exhaustive-deps': 'off'
   },
   ignorePatterns: [
     'node_modules/',

@@ -5,6 +5,10 @@ import App from './App.tsx';
 import Footer from './components/Footer.jsx';
 import Articles from './components/Articles.jsx';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function HomePage() {
   const [showFullSite, setShowFullSite] = useState(false);
 

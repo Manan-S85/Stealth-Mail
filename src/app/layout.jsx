@@ -3,6 +3,10 @@ import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata = {
   title: 'Stealth Mail - Temporary Email Generator',
   description: 'Generate temporary, disposable email addresses instantly. No registration required. Perfect for protecting your privacy and avoiding spam.',
