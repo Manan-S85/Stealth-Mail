@@ -8,7 +8,7 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 // Import route handlers
 const mailRoutes = require('./routes/mail');
-const articleRoutes = require('./routes/articles');
+
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 const app = express();
@@ -86,7 +86,7 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api/mail', strictLimiter, mailRoutes);
-app.use('/api/articles', articleRoutes);
+
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -96,7 +96,6 @@ app.get('/', (req, res) => {
     documentation: '/api/docs',
     endpoints: {
       mail: '/api/mail',
-      articles: '/api/articles',
       health: '/health',
     },
   });
@@ -113,13 +112,6 @@ app.get('/api/docs', (req, res) => {
         'GET /api/mail/inbox': 'Get inbox messages for an email address',
         'GET /api/mail/message/:id': 'Get a specific message by ID',
         'DELETE /api/mail/delete': 'Delete a temporary email address',
-      },
-      articles: {
-        'GET /api/articles': 'Get all articles',
-        'GET /api/articles/:id': 'Get a specific article',
-        'GET /api/articles/popular': 'Get popular articles',
-        'GET /api/articles/category/:category': 'Get articles by category',
-        'GET /api/articles/search': 'Search articles',
       },
     },
   });
